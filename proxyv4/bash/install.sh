@@ -8,10 +8,6 @@ install_httpd_tools() {
     yum -y install httpd-tools
 }
 
-backup_squid_config() {
-    cp /etc/squid/squid.conf /etc/squid/squid.conf.bak
-}
-
 port() {
     echo $(shuf -i 2000-65000 -n 1)
 }
@@ -26,7 +22,6 @@ configure_squid() {
     local password=$(random_password)
 
     sed -i "s/http_port 3128/http_port $port/" /etc/squid/squid.conf
-    sed -i "s/http_access deny all/http_access allow all/" /etc/squid/squid.conf
     sed -i "/# INSERT_AUTHENTICATION_RULE_HERE/i auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwd\nauth_param basic realm proxy\nacl authenticated proxy_auth REQUIRED\nhttp_access allow authenticated\n" /etc/squid/squid.conf
 
     htpasswd -bc /etc/squid/passwd $username $password
@@ -34,6 +29,9 @@ configure_squid() {
     echo "$username:$password" > /etc/squid/stpasswd
     
     port=$(grep -oP 'http_port \K\d+' /etc/squid/squid.conf)
+
+    systemctl restart squid
+    open_firewall_port
 }
 
 restart_squid() {
@@ -49,10 +47,7 @@ open_firewall_port() {
 main() {
     install_squid
     install_httpd_tools
-    backup_squid_config
     configure_squid
-    restart_squid
-    open_firewall_port
     
     local ip_address=$(hostname -I)
     local port=$(grep -oP 'http_port \K\d+' /etc/squid/squid.conf)
