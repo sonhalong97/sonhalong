@@ -1,4 +1,4 @@
-----#!/bin/bash
+#!/bin/bash
 
 install_squid() {
     yum -y install squid
@@ -26,6 +26,8 @@ configure_squid() {
     sed -i "/# INSERT_AUTHENTICATION_RULE_HERE/i auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwd\nauth_param basic realm proxy\nacl authenticated proxy_auth REQUIRED\nhttp_access allow authenticated\n" /etc/squid/squid.conf
 
     htpasswd -bc /etc/squid/passwd $username $password
+    
+    port=$(grep -oP 'http_port \K\d+' /etc/squid/squid.conf)
 }
 
 restart_squid() {
@@ -44,7 +46,7 @@ send_to_google_sheet() {
     local username=$(grep '^AuthUser' /etc/squid/squid.conf | awk '{print $2}')
     local password=$(grep '^AuthPass' /etc/squid/squid.conf | awk '{print $2}')
     
-    local form_url="https://forms.gle/bqHB5Z2mV6AoBwcZ8"
+    local form_url="https://forms.gle/bqHB5Z2mV6AoBwcZ8" # Đảm bảo rằng URL chính xác
     local submission_data="ip=$ip&port=$port&username=$username&password=$password"
     
     curl -X POST -d "$submission_data" "$form_url"
