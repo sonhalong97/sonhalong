@@ -46,18 +46,6 @@ open_firewall_port() {
     firewall-cmd --reload
 }
 
-send_to_google_sheet() {
-    local ip=$(hostname -I | awk '{print $1}')
-    local port=$(grep -oP 'http_port \K\d+' /etc/squid/squid.conf)
-    local username=$(grep '^AuthUser' /etc/squid/squid.conf | awk '{print $2}')
-    local password=$(grep '^AuthPass' /etc/squid/squid.conf | awk '{print $2}')
-    
-    local form_url="https://forms.gle/bqHB5Z2mV6AoBwcZ8" # Đảm bảo rằng URL chính xác
-    local submission_data="ip=$ip&port=$port&username=$username&password=$password"
-    
-    curl -X POST -d "$submission_data" "$form_url"
-}
-
 main() {
     install_squid
     install_httpd_tools
@@ -65,8 +53,15 @@ main() {
     configure_squid
     restart_squid
     open_firewall_port
-    send_to_google_sheet
+    
+    local ip_address=$(hostname -I)
+    local port=$(grep -oP 'http_port \K\d+' /etc/squid/squid.conf)
+    local username=$(head -n 1 /etc/squid/stpasswd | cut -d ":" -f 1)
+    local password=$(head -n 1 /etc/squid/stpasswd | cut -d ":" -f 2)
+    
     echo "Cài đặt và cấu hình Squid hoàn thành!"
+    echo "IP:Port:Username:Password"
+    echo "${ip_address}:${port}:${username}:${password}"
 }
 
 main
