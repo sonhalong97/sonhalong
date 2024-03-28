@@ -49,7 +49,6 @@ open_firewall_port() {
 
 main() {
     install_squid
-    install_httpd_tools
     configure_squid
     
     local ip_address=$(hostname -I)
