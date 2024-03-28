@@ -12,13 +12,17 @@ port() {
     echo $(shuf -i 2000-65000 -n 1)
 }
 
+random_username() {
+    cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 5 | head -n 1
+}
+
 random_password() {
-    cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 10 | head -n 1
+    cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 9 | head -n 1
 }
 
 configure_squid() {
     local port=$(port)
-    local username=$(random_password)
+    local username=$(random_username)
     local password=$(random_password)
 
     sed -i "s/http_port 3128/http_port $port/" /etc/squid/squid.conf
