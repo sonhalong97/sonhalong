@@ -4,16 +4,19 @@ install_squid() {
     yum -y install squid
 }
 
-install_httpd_tools() {
-    yum -y install httpd-tools
-}
-
 port() {
     echo $(shuf -i 2000-65000 -n 1)
 }
 
 random_password() {
     cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 10 | head -n 1
+}
+create_passwd_directory_and_hash() {
+    sudo mkdir -p /etc/squid/passwd
+    local username=$(random_password)
+    local password=$(random_password)
+    htpasswd -nbm "$username" "$password" | sudo tee -a /etc/squid/passwd >/dev/null
+    echo "$username:$password"
 }
 
 configure_squid() {
