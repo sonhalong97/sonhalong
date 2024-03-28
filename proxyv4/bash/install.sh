@@ -11,13 +11,6 @@ port() {
 random_password() {
     cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 10 | head -n 1
 }
-create_passwd_directory_and_hash() {
-    sudo mkdir -p /etc/squid/passwd
-    local username=$(random_password)
-    local password=$(random_password)
-    htpasswd -nbm "$username" "$password" | sudo tee -a /etc/squid/passwd >/dev/null
-    echo "$username:$password"
-}
 
 configure_squid() {
     local port=$(port)
@@ -31,6 +24,8 @@ auth_param basic program /usr/lib64/squid/basic_ncsa_auth /etc/squid/passwd\n\
 auth_param basic realm Squid Basic Authentication\n\
 acl auth_users proxy_auth REQUIRED\n\
 http_access allow auth_users\n" /etc/squid/squid.conf
+    
+    sudo mkdir /etc/squid/passwd
 
     htpasswd -bc /etc/squid/passwd $username $password
     
