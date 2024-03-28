@@ -22,11 +22,12 @@ configure_squid() {
     local password=$(random_password)
 
     sed -i "s/http_port 3128/http_port $port/" /etc/squid/squid.conf
-    sed -i "/# Only allow cachemgr access from localhost/i \
+    sudo sed -i "/# Only allow cachemgr access from localhost/i \
+# Allow access only to authenticated users\n\
 auth_param basic program /usr/lib64/squid/basic_ncsa_auth /etc/squid/passwd\n\
-auth_param basic realm proxy\n\
-acl authenticated proxy_auth REQUIRED\n\
-http_access allow authenticated\n" /etc/squid/squid.conf
+auth_param basic realm Squid Basic Authentication\n\
+acl auth_users proxy_auth REQUIRED\n\
+http_access allow auth_users\n" /etc/squid/squid.conf
 
     htpasswd -bc /etc/squid/passwd $username $password
     
