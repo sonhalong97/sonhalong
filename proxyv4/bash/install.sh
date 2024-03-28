@@ -17,7 +17,7 @@ random_username() {
 }
 
 random_password() {
-    cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 9 | grep '[a-z]' | grep '[0-9]' | head -n 1
+    cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 9 | grep '[a-z]' | grep '[0-9]' | head -n 1
 }
 
 configure_squid() {
@@ -49,6 +49,27 @@ restart_squid() {
     systemctl restart squid
 }
 
+enable_squid_service() {
+    cat << EOF > /etc/systemd/system/squid.service
+[Unit]
+Description=Squid Web Proxy
+After=network.target
+
+[Service]
+Type=forking
+ExecStart=/usr/sbin/squid -f /etc/squid/squid.conf -z
+ExecReload=/bin/kill -HUP \$MAINPID
+ExecStop=/usr/sbin/squid -k shutdown
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+    systemctl daemon-reload
+    systemctl enable squid
+}
+
 open_firewall_port() {
     local port=$(grep -oP 'http_port \K\d+' /etc/squid/squid.conf)
     firewall-cmd --permanent --add-port=$port/tcp
@@ -59,6 +80,7 @@ main() {
     install_squid
     install_httpd_tools
     configure_squid
+    enable_squid_service
     
     local ip_address=$(hostname -I)
     local port=$(grep -oP 'http_port \K\d+' /etc/squid/squid.conf)
