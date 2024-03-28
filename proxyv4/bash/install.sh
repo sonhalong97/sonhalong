@@ -17,7 +17,7 @@ random_username() {
 }
 
 random_password() {
-    cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 9 | grep '[a-z]' | grep '[0-9]' | head -n 1
+    cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 9 | grep '[a-z]' | grep '[0-9]' | head -n 1
 }
 
 configure_squid() {
