@@ -25,7 +25,7 @@ auth_param basic realm Squid Basic Authentication\n\
 acl auth_users proxy_auth REQUIRED\n\
 http_access allow auth_users\n" /etc/squid/squid.conf
     
-    sudo mkdir /etc/squid/passwd
+    sudo touch /etc/squid/passwd
 
     htpasswd -bc /etc/squid/passwd $username $password
     
