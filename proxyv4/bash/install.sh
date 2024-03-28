@@ -4,12 +4,16 @@ install_squid() {
     yum -y install squid
 }
 
+install_httpd_tools() {
+    yum -y install httpd-tools
+}
+
 port() {
     echo $(shuf -i 2000-65000 -n 1)
 }
 
 random_password() {
-    cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 10 | head -n 1
+    cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 10 | head -n 1
 }
 
 configure_squid() {
