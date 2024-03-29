@@ -31,14 +31,14 @@ configure_squid() {
 auth_param basic program /usr/lib64/squid/basic_ncsa_auth /etc/squid/passwd\n\
 auth_param basic realm Squid Basic Authentication\n\
 acl auth_users proxy_auth REQUIRED\n\
-http_access allow auth_users" /etc/squid/squid.conf
+http_access allow auth_users\n" /etc/squid/squid.conf
 
 sudo sed -i "/# Deny CONNECT to other than secure SSL ports/a \
 acl image_files urlpath_regex \.jpeg$ \.jpg$ \.png$ \.gif$ \.bmp$ \.tiff$ \.tif$ \.webp$ \.svg$\n\
 acl video_files urlpath_regex \.mp4$ \.avi$ \.mov$ \.wmv$ \.flv$ \.mkv$ \.webm$ \.mpeg$ \.mpg$ \.qt$ \.3gp$\n\
 http_access allow image_files\n\
 http_access allow video_files" /etc/squid/squid.conf
-
+    
     sudo touch /etc/squid/passwd
 
     htpasswd -bc /etc/squid/passwd $username $password
