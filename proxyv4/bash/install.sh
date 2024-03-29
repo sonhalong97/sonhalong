@@ -44,8 +44,6 @@ http_access allow video_files" /etc/squid/squid.conf
 
     sudo touch /etc/squid/passwd
 
-    sudo touch /var/cache/squid
-
     htpasswd -bc /etc/squid/passwd $username $password
     
     echo "$username:$password" > /etc/squid/stpasswd
