@@ -27,6 +27,8 @@ configure_squid() {
 
     sed -i "s/http_port 3128/http_port $port/" /etc/squid/squid.conf
     sudo sed -i "/# Only allow cachemgr access from localhost/i \
+# Set cache directory\n\
+cache_dir ufs /var/cache/squid 100 16 256\n\
 # Allow access only to authenticated users\n\
 auth_param basic program /usr/lib64/squid/basic_ncsa_auth /etc/squid/passwd\n\
 auth_param basic realm Squid Basic Authentication\n\
@@ -41,6 +43,8 @@ http_access allow video_files" /etc/squid/squid.conf
 
 
     sudo touch /etc/squid/passwd
+
+    sudo touch /var/cache/squid
 
     htpasswd -bc /etc/squid/passwd $username $password
     
