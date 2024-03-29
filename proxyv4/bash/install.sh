@@ -39,7 +39,6 @@ acl video_files urlpath_regex \.mp4$ \.avi$ \.mov$ \.wmv$ \.flv$ \.mkv$ \.webm$ 
 http_access allow image_files\n\
 http_access allow video_files" /etc/squid/squid.conf
 
-
     sudo touch /etc/squid/passwd
 
     htpasswd -bc /etc/squid/passwd $username $password
