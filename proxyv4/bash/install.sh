@@ -1,5 +1,9 @@
 #!/bin/bash
 
+install_update() {
+    yum update -y
+}
+
 install_squid() {
     yum -y install squid
 }
@@ -56,23 +60,6 @@ restart_squid() {
 }
 
 enable_squid_service() {
-    cat << EOF > /etc/systemd/system/squid.service
-[Unit]
-Description=Squid Web Proxy
-After=network.target
-
-[Service]
-Type=forking
-ExecStart=/usr/sbin/squid -f /etc/squid/squid.conf -z
-ExecReload=/bin/kill -HUP \$MAINPID
-ExecStop=/usr/sbin/squid -k shutdown
-PrivateTmp=true
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-    systemctl daemon-reload
     systemctl enable squid
 }
 
