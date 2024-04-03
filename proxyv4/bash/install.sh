@@ -42,6 +42,45 @@ acl image_files urlpath_regex \.jpeg$ \.jpg$ \.png$ \.gif$ \.bmp$ \.tiff$ \.tif$
 acl video_files urlpath_regex \.mp4$ \.avi$ \.mov$ \.wmv$ \.flv$ \.mkv$ \.webm$ \.mpeg$ \.mpg$ \.qt$ \.3gp$\n\
 http_access allow image_files\n\
 http_access allow video_files" /etc/squid/squid.conf
+
+    # Additional request header access controls
+    sed -i "/# Additional request header access controls/a \
+# Turn off headers\n\
+via off\n\
+forwarded_for off\n\
+request_header_access Allow allow all\n\
+request_header_access Authorization allow all\n\
+request_header_access WWW-Authenticate allow all\n\
+request_header_access Proxy-Authorization allow all\n\
+request_header_access Proxy-Authenticate allow all\n\
+request_header_access Cache-Control allow all\n\
+request_header_access Content-Encoding allow all\n\
+request_header_access Content-Length allow all\n\
+request_header_access Content-Type allow all\n\
+request_header_access Date allow all\n\
+request_header_access Expires allow all\n\
+request_header_access Host allow all\n\
+request_header_access If-Modified-Since allow all\n\
+request_header_access Last-Modified allow all\n\
+request_header_access Location allow all\n\
+request_header_access Pragma allow all\n\
+request_header_access Accept allow all\n\
+request_header_access Accept-Charset allow all\n\
+request_header_access Accept-Encoding allow all\n\
+request_header_access Accept-Language allow all\n\
+request_header_access Content-Language allow all\n\
+request_header_access Mime-Version allow all\n\
+request_header_access Retry-After allow all\n\
+request_header_access Title allow all\n\
+request_header_access Connection allow all\n\
+request_header_access Proxy-Connection allow all\n\
+request_header_access User-Agent allow all\n\
+request_header_access Cookie allow all\n\
+request_header_access All deny all\n\
+request_header_access Referer deny all\n\
+request_header_access X-Forwarded-For deny all\n\
+request_header_access Via deny all\n\
+request_header_access Cache-Control deny all" /etc/squid/squid.conf
     
     touch /etc/squid/passwd
 
@@ -54,6 +93,7 @@ http_access allow video_files" /etc/squid/squid.conf
     systemctl restart squid
     open_firewall_port
 }
+
 
 restart_squid() {
     systemctl restart squid
