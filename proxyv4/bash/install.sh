@@ -44,7 +44,12 @@ http_access allow image_files\n\
 http_access allow video_files" /etc/squid/squid.conf
 
     # Additional request header access controls
-    sed -i "/# Additional request header access controls/a \
+    sed -i "/refresh_pattern .               0       20%     4320/a \
+# Additional request header access controls\n\
+request_header_access Referer deny all\n\
+request_header_access X-Forwarded-For deny all\n\
+request_header_access Via deny all\n\
+request_header_access Cache-Control deny all\n\
 # Turn off headers\n\
 via off\n\
 forwarded_for off\n\
@@ -76,11 +81,7 @@ request_header_access Connection allow all\n\
 request_header_access Proxy-Connection allow all\n\
 request_header_access User-Agent allow all\n\
 request_header_access Cookie allow all\n\
-request_header_access All deny all\n\
-request_header_access Referer deny all\n\
-request_header_access X-Forwarded-For deny all\n\
-request_header_access Via deny all\n\
-request_header_access Cache-Control deny all" /etc/squid/squid.conf
+request_header_access All deny all\n" /etc/squid/squid.conf
     
     touch /etc/squid/passwd
 
@@ -93,6 +94,7 @@ request_header_access Cache-Control deny all" /etc/squid/squid.conf
     systemctl restart squid
     open_firewall_port
 }
+
 
 
 restart_squid() {
