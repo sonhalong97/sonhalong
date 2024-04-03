@@ -43,7 +43,7 @@ acl video_files urlpath_regex \.mp4$ \.avi$ \.mov$ \.wmv$ \.flv$ \.mkv$ \.webm$ 
 http_access allow image_files\n\
 http_access allow video_files" /etc/squid/squid.conf
 
-    sed -i "/refresh_pattern .               0       20%     4320/a \
+    sed -i "/# Add any of your own refresh_pattern entries above these./a \
 # Additional request header access controls\n\
 request_header_access Referer deny all\n\
 request_header_access X-Forwarded-For deny all\n\
