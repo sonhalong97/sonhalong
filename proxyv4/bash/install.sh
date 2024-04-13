@@ -81,6 +81,8 @@ request_header_access Proxy-Connection allow all\n\
 request_header_access User-Agent allow all\n\
 request_header_access Cookie allow all\n\
 request_header_access All deny all\n" /etc/squid/squid.conf
+
+    sed -i "/^#cache_dir/a cache_dir ufs /var/spool/squid 5000 16 256\nworkers 2\ncache_mem 1024 MB\nmaximum_object_size 4096 MB\n" /etc/squid/squid.conf
    
     touch /etc/squid/passwd
 
