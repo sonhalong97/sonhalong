@@ -114,7 +114,7 @@ main() {
     configure_squid
     enable_squid_service
     
-    local ip_address=$(hostname -I)
+    local ip_address=$(curl -s ifconfig.me)
     local port=$(grep -oP 'http_port \K\d+' /etc/squid/squid.conf)
     local username=$(head -n 1 /etc/squid/stpasswd | cut -d ":" -f 1)
     local password=$(head -n 1 /etc/squid/stpasswd | cut -d ":" -f 2)
