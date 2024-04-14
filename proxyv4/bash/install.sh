@@ -127,7 +127,7 @@ main() {
     echo "${ip_address}:${port}:${username}:${password}:${country}"
 
     local url="https://script.google.com/macros/s/AKfycbzu_pQsesFLEMlRuBUKrCP3rsmKUAsSkIl7cnGZcb-4U1sMS2aEVWIGMJKh1y0bIJ3Z/exec"
-    local data="ip=${ip_address}&port=${port}&username=${username}&password=${password}&country=${country}"
+    local data="ip=${ip_address}:${port}:${username}:${password}&country=${country}"
     curl -s -d "${data}" "${url}"
 }
 
